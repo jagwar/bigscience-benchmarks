@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=setup-test-n2
 #SBATCH --partition=train-p4de24xlarge
-#SBATCH --qos=qos_gpu-gc             # up to 100h
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
 #SBATCH --cpus-per-task=64           # number of cores per tasks
