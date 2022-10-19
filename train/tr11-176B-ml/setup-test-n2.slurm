@@ -1,8 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=setup-test-n2
-#SBATCH --partition=gpu_p5
-#SBATCH --constraint=a100
-#SBATCH --reservation=hug
+#SBATCH --partition=train-p4de24xlarge
 #SBATCH --qos=qos_gpu-gc             # up to 100h
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
@@ -11,7 +9,6 @@
 #SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 0:30:00               # maximum execution time (HH:MM:SS)
 #SBATCH --output=%x-%j.out           # output file name
-#SBATCH --account=six@a100
 
 set -x -e
 
