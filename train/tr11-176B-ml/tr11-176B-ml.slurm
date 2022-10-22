@@ -1,17 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
-#SBATCH --partition=gpu_p5
-#SBATCH --constraint=a100
-#SBATCH --reservation=hug
-#SBATCH --qos=qos_gpu-gc             # up to 100h
-#SBATCH --nodes=24
+#SBATCH --nodes=12
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
 #SBATCH --cpus-per-task=64           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --output=%x-%j.out           # output file name
-#SBATCH --account=six@a100
 
 set -x -e
 
@@ -100,6 +95,7 @@ EXIT_OPTS=" \
     --exit-duration-in-mins 5990 \
     "
 
+#     --rampup-batch-size 192 16 9_765_625 \
 GPT_ARGS=" \
     --pp-partition-method 'type:transformer|embedding' \
     --num-layers $NLAYERS \
@@ -108,7 +104,6 @@ GPT_ARGS=" \
     --seq-length $SEQ_LEN \
     --max-position-embeddings $SEQ_LEN \
     --micro-batch-size $MICRO_BATCH_SIZE \
-    --rampup-batch-size 192 16 9_765_625 \
     --global-batch-size $GLOBAL_BATCH_SIZE \
     --train-samples $TRAIN_SAMPLES \
     --tokenizer-type PretrainedFromHF \
@@ -216,6 +211,6 @@ SRUN_ARGS=" \
     --kill-on-bad-exit=1 \
     "
 
-clear; srun $SRUN_ARGS --jobid $SLURM_JOB_ID bash -c "$LAUNCHER --node_rank \$SLURM_PROCID $CMD" 2>&1 | tee -a $LOGS_PATH/main_log.txt
+clear; srun $SRUN_ARGS --jobid $SLURM_JOB_ID bash -c "export FI_PROVIDER=efa && export NCCL_DEBUG=INFO && export FI_EFA_USE_DEVICE_RDMA=1 && export RDMAV_FORK_SAFE=1 && export NCCL_PROTO=simple && $LAUNCHER --node_rank \$SLURM_PROCID $CMD" 2>&1 | tee -a $LOGS_PATH/main_log.txt
 
 echo "END TIME: $(date)"
