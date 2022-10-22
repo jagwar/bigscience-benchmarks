@@ -13,9 +13,9 @@
 # then
 #    . /etc/profile.d/z_modules.sh
 # fi
-module purge
-module load cuda/11.4.3
-module load nvtop git git-lfs github-cli mc
+#module purge
+#module load cuda/11.4.3
+#module load nvtop git git-lfs github-cli mc
 #module load pytorch-gpu/py3/1.8.1
 #module load gcc/9.3.0
 
@@ -23,9 +23,9 @@ module load nvtop git git-lfs github-cli mc
 export TORCH_CUDA_ARCH_LIST="7.0 8.0"
 
 # git prompt
-export GIT_PROMPT_ONLY_IN_REPO=0;
-export GIT_PROMPT_THEME="JZPRod"
-source $six_ALL_CCFRWORK/envs/.bash-git-prompt/gitprompt.sh
+#export GIT_PROMPT_ONLY_IN_REPO=0;
+#export GIT_PROMPT_THEME="JZPRod"
+#source $six_ALL_CCFRWORK/envs/.bash-git-prompt/gitprompt.sh
 
 # We are using common disk spaces for datasets, caches, and experiment dumps:
 #
@@ -45,14 +45,18 @@ export DATASETS_CUSTOM=$six_ALL_CCFRWORK/datasets-custom
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/gpfslocalsup/pub/anaconda-py3/2020.02/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+### CONDA ###
+# !! Contents within this block are managed by 'conda init' !!
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/gpfswork/rech/six/commun/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/gpfslocalsup/pub/anaconda-py3/2020.02/etc/profile.d/conda.sh" ]; then
-        . "/gpfslocalsup/pub/anaconda-py3/2020.02/etc/profile.d/conda.sh"
+    if [ -f "/gpfswork/rech/six/commun/conda/etc/profile.d/conda.sh" ]; then
+        . "/gpfswork/rech/six/commun/conda/etc/profile.d/conda.sh"
     else
-        export PATH="/gpfslocalsup/pub/anaconda-py3/2020.02/bin:$PATH"
+        export PATH="/gpfswork/rech/six/commun/conda/bin:$PATH"
     fi
 fi
 unset __conda_setup
