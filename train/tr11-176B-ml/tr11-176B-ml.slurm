@@ -1,10 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
-#SBATCH --nodes=12
+#SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
-#SBATCH --cpus-per-task=64           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --output=%x-%j.out           # output file name
 
@@ -214,3 +212,4 @@ SRUN_ARGS=" \
 clear; srun $SRUN_ARGS --jobid $SLURM_JOB_ID bash -c "export FI_PROVIDER=efa && export NCCL_DEBUG=INFO && export FI_EFA_USE_DEVICE_RDMA=1 && export RDMAV_FORK_SAFE=1 && export NCCL_PROTO=simple && $LAUNCHER --node_rank \$SLURM_PROCID $CMD" 2>&1 | tee -a $LOGS_PATH/main_log.txt
 
 echo "END TIME: $(date)"
+
