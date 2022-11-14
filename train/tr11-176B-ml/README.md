@@ -989,3 +989,14 @@ pip install setuptools_rust
 pip install -e bindings/python
 
 ```
+
+### Troubleshooting, error:
+```
+No such file or directory: '/gpfswork/rech/six/commun/models/models--bigscience-catalogue-data-dev--byte-level-bpe-tokenizer-no-norm-250k-whitespace-and-eos-regex-alpha-v3-dedup-lines-articles/refs/main'
+```
+
+```
+python
+from transformers import AutoTokenizer
+AutoTokenizer.from_pretrained("bigscience-catalogue-data-dev/byte-level-bpe-tokenizer-no-norm-250k-whitespace-and-eos-regex-alpha-v3-dedup-lines-articles", cache_dir="/gpfswork/rech/six/commun/models/")
+```
