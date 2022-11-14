@@ -995,6 +995,7 @@ pip install -e bindings/python
 No such file or directory: '/gpfswork/rech/six/commun/models/models--bigscience-catalogue-data-dev--byte-level-bpe-tokenizer-no-norm-250k-whitespace-and-eos-regex-alpha-v3-dedup-lines-articles/refs/main'
 ```
 
+Fix:
 ```
 python
 from transformers import AutoTokenizer
