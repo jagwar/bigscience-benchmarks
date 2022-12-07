@@ -64,4 +64,4 @@ unset __conda_setup
 
 export CONDA_ENVS_PATH=$six_ALL_CCFRWORK/conda
 conda activate base
-conda activate /gpfswork/rech/six/commun/conda/tr11-176B-ml 
+conda activate tr11-176B-ml 
