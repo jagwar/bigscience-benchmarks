@@ -1,22 +1,20 @@
 #!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
-#SBATCH --partition=gpu_p5
-#SBATCH --constraint=a100
-#SBATCH --reservation=hug
-#SBATCH --qos=qos_gpu-gc             # up to 100h
-#SBATCH --nodes=24
+#SBATCH --exclusive
+#SBATCH --nodes=12
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
 #SBATCH --cpus-per-task=64           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
 #SBATCH --output=%x-%j.out           # output file name
-#SBATCH --account=six@a100
 
 set -x -e
 
 #source $six_ALL_CCFRWORK/start-py38-pt110
 #source $six_ALL_CCFRWORK/start-py38-pt111
+six_ALL_CCFRSCRATCH=/gpfswork/rech/six/commun/scratch
+six_ALL_CCFRWORK=/gpfswork/rech/six/commun/
 source $six_ALL_CCFRWORK/code/tr11-176B-ml/bigscience/train/tr11-176B-ml/start-tr11-176B-ml
 
 echo "START TIME: $(date)"
@@ -52,6 +50,9 @@ export HF_MODULES_CACHE=$six_ALL_CCFRWORK/modules
 export HF_METRICS_CACHE=$six_ALL_CCFRWORK/metrics
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
+
+export FI_PROVIDER=efa
+export FI_EFA_USE_DEVICE_RDMA=1
 
 # testing for potential faulty nodes
 # srun --jobid $SLURM_JOB_ID bash -c 'python -c "import torch, socket; print(socket.gethostname(), torch.cuda.is_available())"'
@@ -100,6 +101,7 @@ EXIT_OPTS=" \
     --exit-duration-in-mins 5990 \
     "
 
+#     --rampup-batch-size 192 16 9_765_625 \
 GPT_ARGS=" \
     --pp-partition-method 'type:transformer|embedding' \
     --num-layers $NLAYERS \
@@ -108,7 +110,6 @@ GPT_ARGS=" \
     --seq-length $SEQ_LEN \
     --max-position-embeddings $SEQ_LEN \
     --micro-batch-size $MICRO_BATCH_SIZE \
-    --rampup-batch-size 192 16 9_765_625 \
     --global-batch-size $GLOBAL_BATCH_SIZE \
     --train-samples $TRAIN_SAMPLES \
     --tokenizer-type PretrainedFromHF \
@@ -208,6 +209,7 @@ export TORCHELASTIC_ERROR_FILE=/tmp/torch-elastic-error.json
 # force crashing on nccl issues like hanging broadcast
 export NCCL_ASYNC_ERROR_HANDLING=1
 
+export NCCL_ALGO=auto
 # srun error handling:
 # --wait=60: wait 60 sec after the first task terminates before terminating all remaining tasks
 # --kill-on-bad-exit=1: terminate a step if any task exits with a non-zero exit code
@@ -219,3 +221,4 @@ SRUN_ARGS=" \
 clear; srun $SRUN_ARGS --jobid $SLURM_JOB_ID bash -c "$LAUNCHER --node_rank \$SLURM_PROCID $CMD" 2>&1 | tee -a $LOGS_PATH/main_log.txt
 
 echo "END TIME: $(date)"
+
