@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
 #SBATCH --exclusive
-#SBATCH --nodes=12
+#SBATCH --nodes=24
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
-#SBATCH --cpus-per-task=64           # number of cores per tasks
+#SBATCH --cpus-per-task=128          # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
@@ -50,9 +50,6 @@ export HF_MODULES_CACHE=$six_ALL_CCFRWORK/modules
 export HF_METRICS_CACHE=$six_ALL_CCFRWORK/metrics
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
-
-export FI_PROVIDER=efa
-export FI_EFA_USE_DEVICE_RDMA=1
 
 # testing for potential faulty nodes
 # srun --jobid $SLURM_JOB_ID bash -c 'python -c "import torch, socket; print(socket.gethostname(), torch.cuda.is_available())"'
