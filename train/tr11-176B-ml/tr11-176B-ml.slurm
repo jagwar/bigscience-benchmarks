@@ -54,21 +54,21 @@ export HF_METRICS_CACHE=$six_ALL_CCFRWORK/metrics
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
 
-# export RX_QUEUE_LEN=8192 \
-#        IB_RX_QUEUE_LEN=8192 \
-#        UCX_TLS=tcp \
-#        HCOLL_ENABLE_MCAST_ALL=0 \
-#        coll_hcoll_enable=0 \
-#        UCX_NET_DEVICES=eth0 \
-#        NCCL_DEBUG=WARN \
-#        NCCL_IB_TIMEOUT=16 \
-#        NCCL_IB_SL=0 \
-#        NCCL_IB_TC=41 \
-#        NCCL_IGNORE_CPU_AFFINITY=1 \
-#        NCCL_IB_GID_INDEX=3 \
-#        NCCL_ALGO=Ring \
-#        NCCL_IB_HCA==mlx5_1,mlx5_2,mlx5_3,mlx5_4,mlx5_5,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_14,mlx5_15,mlx5_16,mlx5_17 \
-#        NCCL_IB_QPS_PER_CONNECTION=4
+export RX_QUEUE_LEN=8192 \
+       IB_RX_QUEUE_LEN=8192 \
+       UCX_TLS=tcp \
+       HCOLL_ENABLE_MCAST_ALL=0 \
+       coll_hcoll_enable=0 \
+       UCX_NET_DEVICES=eth0 \
+       NCCL_DEBUG=WARN \
+       NCCL_IB_TIMEOUT=16 \
+       NCCL_IB_SL=0 \
+       NCCL_IB_TC=41 \
+       NCCL_IGNORE_CPU_AFFINITY=1 \
+       NCCL_IB_GID_INDEX=3 \
+       NCCL_ALGO=Ring \
+       NCCL_IB_HCA==mlx5_1,mlx5_2,mlx5_3,mlx5_4,mlx5_5,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_14,mlx5_15,mlx5_16,mlx5_17 \
+       NCCL_IB_QPS_PER_CONNECTION=4
 
 # testing for potential faulty nodes
 # srun --jobid $SLURM_JOB_ID bash -c 'python -c "import torch, socket; print(socket.gethostname(), torch.cuda.is_available())"'
@@ -230,6 +230,8 @@ export NCCL_ASYNC_ERROR_HANDLING=1
 # --wait=60: wait 60 sec after the first task terminates before terminating all remaining tasks
 # --kill-on-bad-exit=1: terminate a step if any task exits with a non-zero exit code
 SRUN_ARGS=" \
+    --ntasks-per-node=1 \
+    --cpus-per-task=128 \
     --wait=60 \
     --kill-on-bad-exit=1 \
     "
