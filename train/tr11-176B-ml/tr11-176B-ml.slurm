@@ -1,9 +1,10 @@
-#!/bin/bash
+!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
+#SBATCH --partition=compute
 #SBATCH --exclusive
-#SBATCH --nodes=24
+#SBATCH --nodes=12
 #SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
-#SBATCH --cpus-per-task=128           # number of cores per tasks
+#SBATCH --cpus-per-task=48           # number of cores per tasks
 #SBATCH --hint=nomultithread         # we get physical cores not logical
 #SBATCH --gres=gpu:8                 # number of gpus
 #SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
@@ -54,22 +55,6 @@ export HF_METRICS_CACHE=$six_ALL_CCFRWORK/metrics
 export HF_DATASETS_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
 
-export RX_QUEUE_LEN=8192 \
-       IB_RX_QUEUE_LEN=8192 \
-       UCX_TLS=tcp \
-       HCOLL_ENABLE_MCAST_ALL=0 \
-       coll_hcoll_enable=0 \
-       UCX_NET_DEVICES=eth0 \
-       NCCL_DEBUG=WARN \
-       NCCL_IB_TIMEOUT=16 \
-       NCCL_IB_SL=0 \
-       NCCL_IB_TC=41 \
-       NCCL_IGNORE_CPU_AFFINITY=1 \
-       NCCL_IB_GID_INDEX=3 \
-       NCCL_ALGO=Ring \
-       NCCL_IB_HCA==mlx5_1,mlx5_2,mlx5_3,mlx5_4,mlx5_5,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_14,mlx5_15,mlx5_16,mlx5_17 \
-       NCCL_IB_QPS_PER_CONNECTION=4
-
 # testing for potential faulty nodes
 # srun --jobid $SLURM_JOB_ID bash -c 'python -c "import torch, socket; print(socket.gethostname(), torch.cuda.is_available())"'
 
@@ -83,12 +68,12 @@ NNODES=$SLURM_NNODES
 TP_SIZE=4
 PP_SIZE=12
 
-MICRO_BATCH_SIZE=1  # was MBS=1 till GBS=784
+MICRO_BATCH_SIZE=2  # was MBS=1 till GBS=784
 GLOBAL_BATCH_SIZE=2048  # 4.2M tokens. It is larger than the initial plan of 3.2M tokens to get higher throughput
 
 NHIDDEN=14336
-NLAYERS=34 #GSA was 70
-NHEADS=112 #was 112
+NLAYERS=70
+NHEADS=112
 SEQ_LEN=2048
 
 SAVE_INTERVAL=100
@@ -231,7 +216,7 @@ export NCCL_ASYNC_ERROR_HANDLING=1
 # --kill-on-bad-exit=1: terminate a step if any task exits with a non-zero exit code
 SRUN_ARGS=" \
     --ntasks-per-node=1 \
-    --cpus-per-task=128 \
+    --cpus-per-task=48 \
     --wait=60 \
     --kill-on-bad-exit=1 \
     "
