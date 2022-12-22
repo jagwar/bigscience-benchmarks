@@ -209,6 +209,7 @@ export TORCHELASTIC_ERROR_FILE=/tmp/torch-elastic-error.json
 
 # force crashing on nccl issues like hanging broadcast
 export NCCL_ASYNC_ERROR_HANDLING=1
+export NCCL_DEBUG=INFO
 
 # export NCCL_ALGO=auto
 # srun error handling:
