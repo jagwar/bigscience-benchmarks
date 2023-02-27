@@ -1,10 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=tr11-176B-ml
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=1          # crucial - only 1 task per dist per node!
-#SBATCH --hint=nomultithread         # we get physical cores not logical
-#SBATCH --time 100:00:00             # maximum execution time (HH:MM:SS)
-#SBATCH --output=%x-%j.out           # output file name
+#SBATCH --nodes=24
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=96
+#SBATCH --gres=gpu:a100:8
+#SBATCH --exclusive
+#SBATCH --output=%x-%j.out
+#SBATCH --partition=production-cluster
 
 set -x -e
 
